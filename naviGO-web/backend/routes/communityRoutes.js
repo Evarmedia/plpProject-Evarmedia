@@ -8,7 +8,7 @@ const { authenticate } = require('../middleware/authMiddleware');
 router.post('/create', authenticate, createCommunity);
 
 // Route to update a community
-router.post('/create', authenticate, assignCommunityManager);
+router.post('/assign', authenticate, assignCommunityManager);
 
 // Route to get a specific community by ID
 router.get('/:communityId', getCommunityById);

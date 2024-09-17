@@ -1,6 +1,8 @@
-const { Communities, Users } = require('../models');
+const Communities = require('../models/Community');
+const Users = require('../models/User');
 
-// Add a new community
+// Add a new community POST
+// /communities/create
 const createCommunity = async (req, res) => {
   const { community_name, location, community_manager_id } = req.body;
 
@@ -16,7 +18,8 @@ const createCommunity = async (req, res) => {
   }
 };
 
-// Assign a community manager to a community
+// Assign a community manager to a community POST
+// /communities/assign
 const assignCommunityManager = async (req, res) => {
   const { community_id, community_manager_id } = req.body;
 
@@ -37,17 +40,8 @@ const assignCommunityManager = async (req, res) => {
   }
 };
 
-// Get all communities
-const getAllCommunities = async (req, res) => {
-  try {
-    const communities = await Communities.findAll();
-    res.status(200).json(communities);
-  } catch (error) {
-    res.status(500).json({ message: 'Failed to retrieve communities', error });
-  }
-};
-
-// Get community by ID
+// Get community by ID GET
+// /communities/:communityId
 const getCommunityById = async (req, res) => {
   const { community_id } = req.params;
 
@@ -64,7 +58,8 @@ const getCommunityById = async (req, res) => {
   }
 };
 
-// Update community details
+// Update community details PUT
+// /communities/:communityId
 const updateCommunity = async (req, res) => {
   const { community_id } = req.params;
   const { community_name, location, community_manager_id } = req.body;
@@ -87,6 +82,18 @@ const updateCommunity = async (req, res) => {
     res.status(500).json({ message: 'Failed to update community', error });
   }
 };
+
+// Get all communities
+// /communities/
+const getAllCommunities = async (req, res) => {
+  try {
+    const communities = await Communities.findAll();
+    res.status(200).json(communities);
+  } catch (error) {
+    res.status(500).json({ message: 'Failed to retrieve communities', error });
+  }
+};
+
 
 module.exports = {
   createCommunity,

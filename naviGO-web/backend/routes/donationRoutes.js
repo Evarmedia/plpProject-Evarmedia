@@ -8,13 +8,13 @@ const { authenticate } = require('../middleware/authMiddleware');
 router.post('/create', authenticate, authorize(['admin', 'donor']), addDonation);
 
 // Route to get a specific donation by ID
-router.get('/:donationId', getDonation);
+router.get('/:donation_id', getDonation);
 
 // Route to update a specific donation by ID
-router.put('/:donationId', authenticate, updateDonationStatus);
+router.put('/:donation_id', authenticate, updateDonationStatus);
 
 // get Donations for community
-router.put('/:communityId', authenticate, getDonationsForCommunity);
+router.get('/community/:community_id', authenticate, getDonationsForCommunity);
 
 // Route to get all donations
 router.get('/', getAllDonations);

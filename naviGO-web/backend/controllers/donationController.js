@@ -1,8 +1,7 @@
-// donationController.js
+const Donations = require('../models/Donation');
 
-const { Donations, Users, Communities } = require('../models');
-
-// Add a new donation
+// Add a new donation POST ✅
+// /donations/create
 const addDonation = async (req, res) => {
     const { item_name, item_type, value, quantity, user_id, community_id } = req.body;
 
@@ -25,12 +24,18 @@ const addDonation = async (req, res) => {
     }
 };
 
-// Fetch a specific donation by donation_id
+// Fetch a specific donation by donation_id GET ✅
+// /donations/:donationId
 const getDonation = async (req, res) => {
     const { donation_id } = req.params;
 
+    console.log("Before try block", donation_id);
+
     try {
         const donation = await Donations.findByPk(donation_id);
+
+        console.log(donation_id);
+        console.log(donation);
 
         if (!donation) {
             return res.status(404).json({ message: 'Donation not found' });
@@ -42,7 +47,8 @@ const getDonation = async (req, res) => {
     }
 };
 
-// Update donation status (by community manager)
+// Update donation status (by community manager) PUT ✅
+// /donations/:donationId
 const updateDonationStatus = async (req, res) => {
     const { donation_id } = req.params;
     const { status } = req.body;
@@ -63,7 +69,8 @@ const updateDonationStatus = async (req, res) => {
     }
 };
 
-// Fetch all donations for a specific community (for community managers)
+// Fetch all donations for a specific community (for community managers) GET ✅
+// /donations/:communityId
 const getDonationsForCommunity = async (req, res) => {
     const { community_id } = req.params;
 
@@ -72,13 +79,18 @@ const getDonationsForCommunity = async (req, res) => {
             where: { community_id }
         });
 
+        if (donations.length === 0) {
+            return res.status(404).json({ message: 'No donations found for this community'});
+        }
+
         res.status(200).json({ donations });
     } catch (error) {
         res.status(500).json({ message: 'Error fetching donations', error });
     }
 };
 
-// Fetch all donations (for admin)
+// Fetch all donations (for admin) GET ✅
+// /donations/
 const getAllDonations = async (req, res) => {
     try {
         const donations = await Donations.findAll();

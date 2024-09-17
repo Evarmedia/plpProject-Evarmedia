@@ -1,14 +1,21 @@
+require('dotenv').config();
 const express = require('express');
 const app = express();
 const port = process.env.PORT || 3000;
 
 // Import and configure middlewares
+app.use(express.urlencoded({ extended: true }));
 const cors = require('cors');
 const bodyParser = require('body-parser');
 const { sequelize } = require('./config/db'); // Import Sequelize instance
 
 app.use(cors());
 app.use(bodyParser.json());
+
+// default route
+app.get('/', (req, res) => {
+  res.send("Welcome to NGo Management API");
+});
 
 // Test the database connection
 sequelize.authenticate()
