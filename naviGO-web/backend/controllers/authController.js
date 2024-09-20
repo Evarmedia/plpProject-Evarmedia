@@ -4,7 +4,7 @@ const jwt = require('jsonwebtoken');
 const User  = require('../models/User');
 const { validationResult } = require('express-validator');
 
-// Register Users POST
+// Register Users POST ✅
 // /users/register
 const register = async (req, res) => {
     const errors = validationResult(req);
@@ -37,7 +37,7 @@ const register = async (req, res) => {
     }
 };
 
-// Sign in users POST
+// Sign in users POST ✅
 // /users/login
 const login = async (req, res) => {
     const errors = validationResult(req);
@@ -67,7 +67,7 @@ const login = async (req, res) => {
     }
 };
 
-// Get user Profile
+// Get user Profile GET ✅
 // /users/userProfile
 const getProfile = async (req, res) => {
     try {
@@ -81,8 +81,57 @@ const getProfile = async (req, res) => {
     }
 };
 
+// Edit user profile
+const editUserProfile = async (req, res) => {
+    try {
+        const { user_id } = req.params;
+        const { name, email, password } = req.body;
+
+        // Find the user by ID
+        const user = await User.findByPk(user_id);
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        // Update user details
+        user.name = name || user.name;
+        user.email = email || user.email;
+
+        if (password) {
+            const salt = await bcrypt.genSalt(10);
+            user.password = await bcrypt.hash(password, salt);
+        }
+
+        await user.save();
+        res.status(200).json({ message: 'User profile updated successfully', user });
+    } catch (error) {
+        res.status(500).json({ message: 'Failed to update user profile', error: error.message });
+    }
+};
+
+// Delete a user by ID
+const deleteUser = async (req, res) => {
+    try {
+        const { user_id } = req.params;
+
+        // Find the user by ID
+        const user = await User.findByPk(user_id);
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        // Delete the user
+        await user.destroy();
+        res.status(200).json({ message: 'User deleted successfully' });
+    } catch (error) {
+        res.status(500).json({ message: 'Failed to delete user', error: error.message });
+    }
+};
+
 module.exports = {
     register,
     login,
-    getProfile
+    getProfile,
+    editUserProfile,
+    deleteUser
 };

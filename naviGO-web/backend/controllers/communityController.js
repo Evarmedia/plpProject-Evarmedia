@@ -1,7 +1,7 @@
 const Communities = require('../models/Community');
 const Users = require('../models/User');
 
-// Add a new community POST
+// Add a new community POST ✅
 // /communities/create
 const createCommunity = async (req, res) => {
   const { community_name, location, community_manager_id } = req.body;
@@ -18,7 +18,7 @@ const createCommunity = async (req, res) => {
   }
 };
 
-// Assign a community manager to a community POST
+// Assign a community manager to a community POST ✅
 // /communities/assign
 const assignCommunityManager = async (req, res) => {
   const { community_id, community_manager_id } = req.body;
@@ -40,7 +40,7 @@ const assignCommunityManager = async (req, res) => {
   }
 };
 
-// Get community by ID GET
+// Get community by ID GET ✅
 // /communities/:communityId
 const getCommunityById = async (req, res) => {
   const { community_id } = req.params;
@@ -58,9 +58,9 @@ const getCommunityById = async (req, res) => {
   }
 };
 
-// Update community details PUT
+// Update community details PUT ✅
 // /communities/:communityId
-const updateCommunity = async (req, res) => {
+const editCommunity = async (req, res) => {
   const { community_id } = req.params;
   const { community_name, location, community_manager_id } = req.body;
 
@@ -83,7 +83,7 @@ const updateCommunity = async (req, res) => {
   }
 };
 
-// Get all communities
+// Get all communities ✅
 // /communities/
 const getAllCommunities = async (req, res) => {
   try {
@@ -94,11 +94,30 @@ const getAllCommunities = async (req, res) => {
   }
 };
 
+// Delete a community by ID
+const deleteCommunity = async (req, res) => {
+  const { community_id } = req.params;
+
+  try {
+    const community = await Community.findByPk(community_id);
+
+    if (!community) {
+      return res.status(404).json({ message: 'Community not found' });
+    }
+
+    await community.destroy();
+    res.status(200).json({ message: 'Community deleted successfully' });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Failed to delete community' });
+  }
+};
 
 module.exports = {
   createCommunity,
   assignCommunityManager,
   getCommunityById,
-  updateCommunity,
+  editCommunity,
   getAllCommunities,
+  deleteCommunity
 };

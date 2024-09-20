@@ -100,6 +100,46 @@ const getAllDonations = async (req, res) => {
     }
 };
 
+// Fetch donations by user ID (donor history)
+const getDonationsByUserId = async (req, res) => {
+    try {
+        const { user_id } = req.params;
+
+        // Find donations by user ID
+        const donations = await Donation.findAll({
+            where: { user_id }
+        });
+
+        if (donations.length === 0) {
+            return res.status(404).json({ message: 'No donations found for this user' });
+        }
+
+        res.status(200).json({ donations });
+    } catch (error) {
+        res.status(500).json({ message: 'Failed to fetch donations', error: error.message });
+    }
+};
+
+// Delete a donation by ID
+const deleteDonation = async (req, res) => {
+    try {
+        const { donation_id } = req.params;
+
+        // Find the donation by ID
+        const donation = await Donation.findByPk(donation_id);
+        if (!donation) {
+            return res.status(404).json({ message: 'Donation not found' });
+        }
+
+        // Delete the donation
+        await donation.destroy();
+        res.status(200).json({ message: 'Donation deleted successfully' });
+    } catch (error) {
+        res.status(500).json({ message: 'Failed to delete donation', error: error.message });
+    }
+};
+
+
 // Export the functions
 module.exports = {
     addDonation,
@@ -107,4 +147,6 @@ module.exports = {
     updateDonationStatus,
     getDonationsForCommunity,
     getAllDonations,
+    getDonationsByUserId,
+    deleteDonation
 };
